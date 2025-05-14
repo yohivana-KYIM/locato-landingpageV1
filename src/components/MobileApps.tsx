@@ -361,91 +361,109 @@ export function MobileApps() {
             </div>
             
             <div 
-              className="flex flex-col sm:flex-row gap-4 pt-4 items-center"
+              className="flex flex-col sm:flex-row gap-4 pt-4 items-center justify-center"
               style={{ transitionDelay: '1100ms' }}
             >
-              <Button 
-                variant="default" 
-                size="lg" 
-                className="bg-gradient-to-r from-[#E0252C] to-[#F38A30] text-white px-8 py-6 rounded-xl font-medium flex items-center shadow-lg hover:scale-105 transition-transform"
+              <a 
+                href="https://apps.apple.com/app/locato-cameroun/id1234567890" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="transform hover:scale-105 transition-all duration-300"
               >
-                <img src="/apple-logo.svg" alt="Apple" className="w-6 h-6 mr-2" />
-                Télécharger sur iOS
-              </Button>
-              <Button 
-                variant="default" 
-                size="lg" 
-                className="bg-[#F38A30] hover:bg-[#F38A30]/90 text-white flex items-center px-8 py-6 rounded-xl font-medium shadow-lg hover:scale-105 transition-transform"
+                <img 
+                  src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" 
+                  alt="Télécharger sur l'App Store" 
+                  className="h-12 w-auto"
+                />
+              </a>
+              <a 
+                href="https://play.google.com/store/apps/details?id=com.locato.cameroun" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="transform hover:scale-105 transition-all duration-300"
               >
-                <img src="/google-play.svg" alt="Google Play" className="w-6 h-6 mr-2" />
-                Télécharger sur Android
-              </Button>
+                <img 
+                  src="https://play.google.com/intl/en_us/badges/static/images/badges/fr_badge_web_generic.png" 
+                  alt="Disponible sur Google Play" 
+                  className="h-16 w-auto"
+                />
+              </a>
             </div>
-            <p className="text-xs text-gray-500 mt-2 text-center">Disponible sur App Store et Google Play</p>
-          </div>
-        </div>
-        
-        {/* Section QR code avec délai encore plus long */}
-        <div 
-          className={`flex justify-center mt-16 transition-all duration-1000 ${inView ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-10'}`}
-          style={{ transitionDelay: '1200ms' }}
-        >
-          <div className="relative bg-[#FFF5F0] backdrop-blur-lg rounded-2xl shadow-xl p-6 flex items-center gap-4 border border-gray-100">
-            <span className="absolute -top-3 -left-3 bg-[#E0252C] text-white text-xs px-3 py-1 rounded-full shadow">Nouveau</span>
-            <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-1 bg-[#E0252C] animate-scan" />
-              <div className="w-16 h-16 bg-black rounded-md relative">
-                <div className="absolute w-3 h-3 bg-white top-2 left-2 rounded-sm"></div>
-                <div className="absolute w-3 h-3 bg-white top-2 right-2 rounded-sm"></div>
-                <div className="absolute w-3 h-3 bg-white bottom-2 left-2 rounded-sm"></div>
-                <div className="absolute w-6 h-6 bg-white inset-0 m-auto rounded-sm"></div>
+
+            {/* Section QR code avec animation de scan améliorée */}
+            <div 
+              className={`mt-8 p-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 max-w-md mx-auto transition-all duration-500 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+              style={{ transitionDelay: '1200ms' }}
+            >
+              <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="relative w-48 h-48">
+                  {/* Cadre du QR code avec effet de scan */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-2xl p-3 shadow-inner">
+                    {/* Image de scan stylisée */}
+                    <div className="relative w-full h-full">
+                      {/* QR Code de base */}
+                      <div className="absolute inset-0 bg-[url('https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://locato.cm/app')] bg-contain bg-center bg-no-repeat opacity-90"></div>
+                      
+                      {/* Effet de scan animé */}
+                      <div className="absolute inset-0 overflow-hidden">
+                        {/* Ligne de scan horizontale */}
+                        <div className="absolute inset-x-0 h-8 bg-gradient-to-b from-primary/20 via-primary/40 to-primary/20 animate-scan"></div>
+                        
+                        {/* Points de repère du scan */}
+                        <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-primary"></div>
+                        <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-primary"></div>
+                        <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-primary"></div>
+                        <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-primary"></div>
+                        
+                        {/* Effet de brillance */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 to-transparent animate-shine"></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Effet de halo */}
+                  <div className="absolute -inset-2 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                </div>
+                
+                <div className="flex-1 text-center md:text-left">
+                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-3">
+                    <div className="w-2 h-2 rounded-full bg-primary mr-2 animate-pulse"></div>
+                    Application disponible
+                  </div>
+                  <h4 className="text-xl font-semibold text-gray-900 mb-2">Scannez pour télécharger</h4>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Pointez votre appareil photo vers ce QR code pour accéder directement à l'application
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-2 justify-center md:justify-start">
+                    <div className="flex items-center text-sm text-gray-500">
+                      <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                      <span>Sécurisé</span>
+                    </div>
+                    <div className="flex items-center text-sm text-gray-500">
+                      <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      <span>Rapide</span>
+                    </div>
+                    <div className="flex items-center text-sm text-gray-500">
+                      <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Vérifié</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            
-            <div>
-              <p className="font-semibold text-gray-900">Scannez ce QR code pour télécharger l'application</p>
-              <p className="text-sm text-gray-500">Ou recherchez "Locato Cameroun" sur l'App Store ou Google Play</p>
-            </div>
+
+            <p className="text-sm text-gray-500 mt-4 text-center">
+              Version 1.0.0 • Compatible iOS 13+ et Android 8.0+
+            </p>
           </div>
         </div>
       </div>
     </section>
   );
 }
-
-<style jsx global>{`
-  @keyframes float {
-    0% {
-      transform: translateY(0px) rotateY(0deg);
-    }
-    50% {
-      transform: translateY(-10px) rotateY(5deg);
-    }
-    100% {
-      transform: translateY(0px) rotateY(0deg);
-    }
-  }
-
-  .animate-pulse {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% {
-      opacity: 0.5;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.8;
-      transform: scale(1.05);
-    }
-  }
-
-  @keyframes scan {
-    0% { top: 0; }
-    100% { top: 90%; }
-  }
-  .animate-scan {
-    animation: scan 1.5s infinite alternate;
-  }
-`}</style>

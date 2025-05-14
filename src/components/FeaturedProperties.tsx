@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -92,7 +91,7 @@ const properties = [
 ];
 
 export function FeaturedProperties() {
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState<any>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isReservationModalOpen, setIsReservationModalOpen] = useState(false);
@@ -105,11 +104,11 @@ export function FeaturedProperties() {
   
   useEffect(() => {
     // Simuler le chargement
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
+    // const timer = setTimeout(() => {
+    //   setIsLoading(false);
+    // }, 1500);
     
-    return () => clearTimeout(timer);
+    // return () => clearTimeout(timer);
   }, []);
 
   const handleViewMore = () => {
@@ -151,7 +150,7 @@ export function FeaturedProperties() {
             Découvrez notre sélection de biens immobiliers disponibles à la location à Douala
           </p>
           
-          {isLoading ? (
+          {/* {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[1, 2, 3].map((_, index) => (
                 <Card key={index} className="overflow-hidden animate-pulse">
@@ -165,98 +164,95 @@ export function FeaturedProperties() {
                 </Card>
               ))}
             </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {properties.slice(0, displayedProperties).map((property, index) => (
-                  <Card 
-                    key={property.id} 
-                    className={cn(
-                      "overflow-hidden group transition duration-500 hover:shadow-xl transform hover:-translate-y-1",
-                      property.available ? "" : "opacity-75",
-                      inView ? 'animate-fade-in' : ''
-                    )}
-                    style={{ animationDelay: `${index * 200}ms` }}
-                  >
-                    <div className="relative h-64 overflow-hidden">
-                      <img 
-                        src={property.image} 
-                        alt={property.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        loading="lazy"
-                      />
-                      <Badge className="absolute top-4 left-4 bg-primary hover:bg-primary">
-                        {getPropertyType(property.type)}
+          ) : */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {properties.slice(0, displayedProperties).map((property, index) => (
+              <Card 
+                key={property.id} 
+                className={cn(
+                  "overflow-hidden group transition duration-500 hover:shadow-xl transform hover:-translate-y-1",
+                  property.available ? "" : "opacity-75",
+                  inView ? 'animate-fade-in' : ''
+                )}
+                style={{ animationDelay: `${index * 200}ms` }}
+              >
+                <div className="relative h-64 overflow-hidden">
+                  <img 
+                    src={property.image} 
+                    alt={property.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    loading="lazy"
+                  />
+                  <Badge className="absolute top-4 left-4 bg-primary hover:bg-primary">
+                    {getPropertyType(property.type)}
+                  </Badge>
+                  
+                  {!property.available && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <Badge variant="outline" className="border-2 px-4 py-2 text-lg font-bold text-white border-white">
+                        Non disponible
                       </Badge>
-                      
-                      {!property.available && (
-                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                          <Badge variant="outline" className="border-2 px-4 py-2 text-lg font-bold text-white border-white">
-                            Non disponible
-                          </Badge>
-                        </div>
-                      )}
-                      
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                        <p className="text-white font-bold text-xl">{property.price.toLocaleString()} FCFA<span className="text-sm font-normal">/mois</span></p>
-                        {property.durationMonths && (
-                          <span className="text-xs text-white/80">Durée min: {property.durationMonths} mois</span>
-                        )}
-                      </div>
                     </div>
-                    <CardHeader className="py-4">
-                      <h3 className="text-xl font-bold">{property.title}</h3>
-                      <p className="text-gray-500 flex items-center">
-                        <MapPin className="h-4 w-4 mr-1" /> {property.location}
-                      </p>
-                    </CardHeader>
-                    <CardContent className="py-2">
-                      <div className="flex justify-between text-sm text-gray-600 mb-4">
-                        <span>{property.bedrooms} {property.bedrooms > 1 ? 'chambres' : 'chambre'}</span>
-                        <span>•</span>
-                        <span>{property.bathrooms} {property.bathrooms > 1 ? 'SdB' : 'SdB'}</span>
-                        <span>•</span>
-                        <span>{property.area} m²</span>
-                      </div>
-                    </CardContent>
-                    <CardFooter className="flex justify-between">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => property.available && handleReservation(property)}
-                        disabled={!property.available}
-                        className={!property.available ? "opacity-50 cursor-not-allowed" : ""}
-                      >
-                        <Calendar className="h-4 w-4 mr-2" />
-                        Réserver une visite
-                      </Button>
-                      <Button 
-                        variant="default" 
-                        size="sm" 
-                        className="bg-primary hover:bg-primary-light"
-                        onClick={() => handlePropertyDetails(property)}
-                      >
-                        Détails
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </div>
-              
-              {displayedProperties < properties.length && (
-                <div className="mt-12 text-center">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="mx-auto"
-                    onClick={handleViewMore}
-                  >
-                    <Home className="mr-2 h-5 w-5" />
-                    Voir plus de logements
-                  </Button>
+                  )}
+                  
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                    <p className="text-white font-bold text-xl">{property.price.toLocaleString()} FCFA<span className="text-sm font-normal">/mois</span></p>
+                    {property.durationMonths && (
+                      <span className="text-xs text-white/80">Durée min: {property.durationMonths} mois</span>
+                    )}
+                  </div>
                 </div>
-              )}
-            </>
+                <CardHeader className="py-4">
+                  <h3 className="text-xl font-bold">{property.title}</h3>
+                  <p className="text-gray-500 flex items-center">
+                    <MapPin className="h-4 w-4 mr-1" /> {property.location}
+                  </p>
+                </CardHeader>
+                <CardContent className="py-2">
+                  <div className="flex justify-between text-sm text-gray-600 mb-4">
+                    <span>{property.bedrooms} {property.bedrooms > 1 ? 'chambres' : 'chambre'}</span>
+                    <span>•</span>
+                    <span>{property.bathrooms} {property.bathrooms > 1 ? 'SdB' : 'SdB'}</span>
+                    <span>•</span>
+                    <span>{property.area} m²</span>
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => property.available && handleReservation(property)}
+                    disabled={!property.available}
+                    className={!property.available ? "opacity-50 cursor-not-allowed" : ""}
+                  >
+                    <Calendar className="h-4 w-4 mr-2" />
+                    Réserver une visite
+                  </Button>
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    className="bg-primary hover:bg-primary-light"
+                    onClick={() => handlePropertyDetails(property)}
+                  >
+                    Détails
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+          
+          {displayedProperties < properties.length && (
+            <div className="mt-12 text-center">
+              <Button
+                size="lg"
+                variant="outline"
+                className="mx-auto"
+                onClick={handleViewMore}
+              >
+                <Home className="mr-2 h-5 w-5" />
+                Voir plus de logements
+              </Button>
+            </div>
           )}
         </div>
       </div>

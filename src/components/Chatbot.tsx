@@ -1,50 +1,175 @@
-
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { MessageCircle, X } from 'lucide-react';
+import { MessageCircle, X, Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+// Types de messages et réponses
+type Message = {
+  text: string;
+  isUser: boolean;
+  timestamp: Date;
+};
+
+type BotResponse = {
+  pattern: RegExp;
+  response: string | ((input: string) => string);
+};
 
 export const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<{text: string, isUser: boolean}[]>([
-    { text: "Bonjour ! Comment puis-je vous aider à trouver votre logement idéal à Douala ?", isUser: false }
+  const [messages, setMessages] = useState<Message[]>([
+    { 
+      text: "Bonjour ! Je suis l'assistant Locato. Comment puis-je vous aider à trouver votre logement idéal à Douala ?", 
+      isUser: false,
+      timestamp: new Date()
+    }
   ]);
   const [input, setInput] = useState('');
+  const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Patterns de reconnaissance et réponses
+  const botResponses: BotResponse[] = [
+    {
+      pattern: /^bonjour|salut|hello|hi$/i,
+      response: "Bonjour ! Comment puis-je vous aider aujourd'hui ?"
+    },
+    {
+      pattern: /^merci|thanks/i,
+      response: "Je vous en prie ! N'hésitez pas si vous avez d'autres questions."
+    },
+    {
+      pattern: /^au revoir|bye|goodbye/i,
+      response: "Au revoir ! N'hésitez pas à revenir si vous avez d'autres questions."
+    },
+    {
+      pattern: /(prix|cout|tarif|budget)/i,
+      response: "Nos logements sont disponibles dans différentes gammes de prix, allant de 50 000 FCFA à 500 000 FCFA par mois. Quel est votre budget approximatif ?"
+    },
+    {
+      pattern: /(quartier|zone|secteur)/i,
+      response: "Nous avons des logements dans plusieurs quartiers de Douala : Akwa, Bonanjo, Bonapriso, Deido, Bali, Makepe. Avez-vous une préférence ?"
+    },
+    {
+      pattern: /(visite|voir|rendez-vous)/i,
+      response: "Je peux vous aider à organiser une visite. Dans quel quartier souhaitez-vous visiter un logement ?"
+    },
+    {
+      pattern: /(disponible|disponibilité)/i,
+      response: "La plupart de nos logements sont disponibles immédiatement. Souhaitez-vous voir les biens disponibles dans un quartier particulier ?"
+    },
+    {
+      pattern: /(appartement|studio|villa|maison)/i,
+      response: (input) => {
+        const type = input.toLowerCase().includes('appartement') ? 'appartement' :
+                    input.toLowerCase().includes('studio') ? 'studio' :
+                    input.toLowerCase().includes('villa') ? 'villa' : 'maison';
+        return `Nous avons plusieurs ${type}s disponibles. Souhaitez-vous voir nos offres en ${type} ?`;
+      }
+    },
+    {
+      pattern: /(aide|help|sos)/i,
+      response: "Je peux vous aider à :\n- Trouver un logement selon vos critères\n- Organiser une visite\n- Répondre à vos questions sur les quartiers\n- Vous informer sur les prix\nQue souhaitez-vous faire ?"
+    }
+  ];
+
+  // Fonction pour obtenir une réponse du bot
+  const getBotResponse = (userInput: string): string => {
+    // Recherche d'une correspondance dans les patterns
+    for (const { pattern, response } of botResponses) {
+      if (pattern.test(userInput)) {
+        return typeof response === 'function' ? response(userInput) : response;
+      }
+    }
+
+    // Réponses par défaut si aucun pattern ne correspond
+    const defaultResponses = [
+      "Je comprends votre demande. Pouvez-vous me donner plus de détails ?",
+      "Je peux vous aider à trouver un logement selon vos critères. Que recherchez-vous exactement ?",
+      "Pour mieux vous aider, pourriez-vous préciser votre demande ?",
+      "Je suis là pour vous aider à trouver le logement idéal. Quels sont vos critères principaux ?"
+    ];
+    return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+  };
 
   const toggleChatbot = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSend = () => {
-    if (input.trim() === '') return;
+  const validateMessage = (message: string): boolean => {
+    if (message.trim().length === 0) {
+      setError("Le message ne peut pas être vide");
+      return false;
+    }
+    if (message.length > 500) {
+      setError("Le message ne peut pas dépasser 500 caractères");
+      return false;
+    }
+    setError(null);
+    return true;
+  };
+
+  const handleSend = async () => {
+    const trimmedInput = input.trim();
     
-    // Add user message
-    setMessages([...messages, { text: input, isUser: true }]);
-    setInput('');
-    
-    // Simulate bot response after a delay
-    setTimeout(() => {
-      const botResponses = [
-        "Je peux vous aider à trouver un logement dans les quartiers populaires de Douala.",
-        "Avez-vous des préférences en termes de quartier ou de budget ?",
-        "Nous avons plusieurs options disponibles à Akwa, Bonanjo et Bonapriso.",
-        "N'hésitez pas à utiliser notre filtre de recherche pour affiner vos critères.",
-        "Je suis là pour répondre à toutes vos questions sur la location à Douala !"
-      ];
-      const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
-      setMessages(prev => [...prev, { text: randomResponse, isUser: false }]);
-    }, 1000);
+    if (!validateMessage(trimmedInput)) {
+      return;
+    }
+
+    try {
+      setIsSending(true);
+      
+      // Ajouter le message de l'utilisateur
+      const userMessage: Message = {
+        text: trimmedInput,
+        isUser: true,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, userMessage]);
+      setInput('');
+      
+      // Simuler le temps de réponse du bot
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const botResponse: Message = {
+        text: getBotResponse(userMessage.text),
+        isUser: false,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, botResponse]);
+    } catch (err) {
+      setError("Une erreur s'est produite lors de l'envoi du message");
+    } finally {
+      setIsSending(false);
+      // Focus sur l'input après l'envoi
+      inputRef.current?.focus();
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !e.shiftKey && !isSending) {
+      e.preventDefault();
       handleSend();
     }
   };
 
+  // Auto-scroll vers le dernier message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  // Focus sur l'input quand le chat est ouvert
+  useEffect(() => {
+    if (isOpen) {
+      inputRef.current?.focus();
+    }
+  }, [isOpen]);
+
   return (
     <>
-      {/* Chat button */}
+      {/* Bouton du chat */}
       <button
         onClick={toggleChatbot}
         className={cn(
@@ -61,67 +186,91 @@ export const Chatbot = () => {
         )}
       </button>
 
-      {/* Chat window */}
+      {/* Fenêtre de chat */}
       <div
         className={cn(
           'fixed bottom-24 right-6 z-30 w-80 overflow-hidden rounded-lg bg-white shadow-xl transition-all duration-300 md:w-96',
           isOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'
         )}
       >
-        {/* Chat header */}
+        {/* En-tête du chat */}
         <div className="bg-gradient-to-r from-primary to-[#F9AA31] p-4">
           <h3 className="text-lg font-medium text-white">Assistant Locato</h3>
           <p className="text-sm text-white/80">Nous sommes là pour vous aider</p>
         </div>
 
-        {/* Messages area */}
-        <div className="h-80 overflow-y-auto p-4">
+        {/* Zone des messages */}
+        <div className="h-80 overflow-y-auto p-4 space-y-4">
           {messages.map((msg, index) => (
             <div
               key={index}
               className={cn(
-                'mb-4 max-w-[85%] rounded-lg p-3',
-                msg.isUser
-                  ? 'ml-auto bg-primary/10 text-right'
-                  : 'mr-auto bg-gray-100'
+                'flex flex-col max-w-[85%]',
+                msg.isUser ? 'ml-auto' : 'mr-auto'
               )}
             >
-              {msg.text}
+              <div
+                className={cn(
+                  'rounded-lg p-3',
+                  msg.isUser
+                    ? 'bg-primary/10 text-right'
+                    : 'bg-gray-100'
+                )}
+              >
+                {msg.text}
+              </div>
+              <span className="text-xs text-gray-500 mt-1">
+                {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </span>
             </div>
           ))}
+          <div ref={messagesEndRef} />
         </div>
 
-        {/* Input area */}
-        <div className="border-t border-gray-200 bg-gray-50 p-3">
+        {/* Zone de saisie */}
+        <div className="border-t p-4">
+          {error && (
+            <div className="mb-2 text-sm text-red-500">
+              {error}
+            </div>
+          )}
           <div className="flex items-center gap-2">
             <input
+              ref={inputRef}
               type="text"
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => {
+                setInput(e.target.value);
+                setError(null);
+              }}
               onKeyPress={handleKeyPress}
               placeholder="Écrivez votre message..."
-              className="flex-1 rounded-full border border-gray-300 px-4 py-2 focus:border-primary focus:outline-none"
+              className={cn(
+                "flex-1 rounded-full border px-4 py-2 focus:outline-none",
+                error ? "border-red-500" : "border-gray-300 focus:border-primary",
+                isSending && "opacity-50 cursor-not-allowed"
+              )}
+              disabled={isSending}
+              maxLength={500}
             />
             <Button
               onClick={handleSend}
-              className="rounded-full bg-primary hover:bg-primary-dark"
+              className={cn(
+                "rounded-full bg-primary hover:bg-primary-dark",
+                isSending && "opacity-50 cursor-not-allowed"
+              )}
               size="icon"
+              disabled={isSending}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="rotate-90"
-              >
-                <path d="m5 12 14-9v18z"></path>
-              </svg>
+              {isSending ? (
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              ) : (
+                <Send className="h-5 w-5" />
+              )}
             </Button>
+          </div>
+          <div className="mt-1 text-xs text-gray-500 text-right">
+            {input.length}/500 caractères
           </div>
         </div>
       </div>

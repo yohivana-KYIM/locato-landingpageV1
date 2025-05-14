@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,16 +8,13 @@ import { Mail } from "lucide-react";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     
     // Simulation d'une connexion
     setTimeout(() => {
-      setIsLoading(false);
       toast({
         title: "Connexion réussie",
         description: "Bienvenue sur Locato",
@@ -89,10 +85,9 @@ const Login = () => {
             <div>
               <Button 
                 type="submit" 
-                disabled={isLoading}
                 className="w-full bg-primary hover:bg-primary-dark text-white py-6"
               >
-                {isLoading ? "Connexion en cours..." : "Connexion"}
+                Connexion
               </Button>
             </div>
           </form>

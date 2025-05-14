@@ -367,8 +367,8 @@ export default function EnhancedHero() {
             style={{ transition: 'opacity 0.6s ease', transitionDelay: '0.5s' }}
           >
             <p>
-              La plateforme de location immobilière qui vous permet de trouver rapidement 
-              le logement idéal selon vos critères à Douala, Cameroun.
+              {/* La plateforme de location immobilière qui vous permet de trouver rapidement 
+              le logement idéal selon vos critères à Douala, Cameroun. */}
             </p>
           </div>
           
@@ -405,7 +405,7 @@ export default function EnhancedHero() {
             style={{ transition: 'all 0.6s cubic-bezier(0.22, 1, 0.36, 1)', transitionDelay: '0.8s' }}
           >
             {[
-              { icon: <Check className="h-4 w-4" />, text: "Visite virtuelle" },
+              { icon: <Check className="h-4 w-4" />, text: "Visite" },
               { icon: <Check className="h-4 w-4" />, text: "Paiement sécurisé" },
               { icon: <Check className="h-4 w-4" />, text: "Assistance 24/7" }
             ].map((item, index) => (
@@ -460,7 +460,7 @@ export default function EnhancedHero() {
             className={`flex justify-center mt-16 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
             style={{ transition: 'all 0.6s cubic-bezier(0.22, 1, 0.36, 1)', transitionDelay: '0.9s' }}
           >
-            <div className="grid grid-cols-3 gap-2 md:gap-8 max-w-2xl">
+            {/* <div className="grid grid-cols-3 gap-2 md:gap-8 max-w-2xl">
               {[
                 { number: "1000+", label: "Logements" },
                 { number: "98%", label: "Satisfaction" },
@@ -480,7 +480,7 @@ export default function EnhancedHero() {
                   <div className="text-xs md:text-sm text-white/60">{stat.label}</div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

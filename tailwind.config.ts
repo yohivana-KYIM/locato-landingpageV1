@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -102,6 +101,37 @@ export default {
 					'0%': { transform: 'scale(0.95)', opacity: '0' },
 					'100%': { transform: 'scale(1)', opacity: '1' }
 				},
+				'fade-in-up': {
+					'0%': { opacity: '0', transform: 'translateY(20px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
+				},
+				'scan': {
+					'0%': { transform: 'translateY(-100%)' },
+					'100%': { transform: 'translateY(100%)' }
+				},
+				'width': {
+					'0%': { width: '0%' },
+					'50%': { width: '100%' },
+					'100%': { width: '0%' }
+				},
+				'glitch': {
+					'0%': { transform: 'translate(0)' },
+					'20%': { transform: 'translate(-2px, 2px)' },
+					'40%': { transform: 'translate(-2px, -2px)' },
+					'60%': { transform: 'translate(2px, 2px)' },
+					'80%': { transform: 'translate(2px, -2px)' },
+					'100%': { transform: 'translate(0)' }
+				},
+				'neon-pulse': {
+					'0%, 100%': { 
+						textShadow: '0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff, 0 0 42px #0fa, 0 0 82px #0fa, 0 0 92px #0fa, 0 0 102px #0fa, 0 0 151px #0fa',
+						boxShadow: '0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff, 0 0 42px #0fa, 0 0 82px #0fa, 0 0 92px #0fa, 0 0 102px #0fa, 0 0 151px #0fa'
+					},
+					'50%': { 
+						textShadow: '0 0 4px #fff, 0 0 7px #fff, 0 0 18px #fff, 0 0 38px #0fa, 0 0 73px #0fa, 0 0 80px #0fa, 0 0 94px #0fa, 0 0 140px #0fa',
+						boxShadow: '0 0 4px #fff, 0 0 7px #fff, 0 0 18px #fff, 0 0 38px #0fa, 0 0 73px #0fa, 0 0 80px #0fa, 0 0 94px #0fa, 0 0 140px #0fa'
+					}
+				},
 				float: {
 					'0%, 100%': { transform: 'translateY(0)' },
 					'50%': { transform: 'translateY(-10px)' }
@@ -126,10 +156,45 @@ export default {
 				'fade-in': 'fade-in 0.5s ease-out',
 				'fade-out': 'fade-out 0.5s ease-out',
 				'scale-in': 'scale-in 0.5s ease-out',
+				'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
+				'scan': 'scan 8s linear infinite',
+				'width': 'width 2s ease-in-out infinite',
+				'glitch': 'glitch 0.3s steps(2) infinite',
+				'neon-pulse': 'neon-pulse 1.5s ease-in-out infinite',
 				'float': 'float 6s ease-in-out infinite',
 				'pulse-slow': 'pulse-slow 3s ease-in-out infinite',
                 'circle-progress': 'circle-progress 1.5s ease-out forwards',
                 'bounce-in': 'bounce-in 0.5s ease-out'
+			},
+			utilities: {
+				'.neon-text': {
+					'text-shadow': '0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff, 0 0 42px #0fa, 0 0 82px #0fa, 0 0 92px #0fa, 0 0 102px #0fa, 0 0 151px #0fa',
+					'animation': 'neon-pulse 1.5s ease-in-out infinite'
+				},
+				'.neon-glow': {
+					'box-shadow': '0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff, 0 0 42px #0fa, 0 0 82px #0fa, 0 0 92px #0fa, 0 0 102px #0fa, 0 0 151px #0fa',
+					'animation': 'neon-pulse 1.5s ease-in-out infinite'
+				},
+				'.neon-button': {
+					'box-shadow': '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #E0252C, 0 0 20px #E0252C, 0 0 25px #E0252C, 0 0 30px #E0252C, 0 0 35px #E0252C',
+					'transition': 'all 0.3s ease-in-out',
+					'&:hover': {
+						'box-shadow': '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #F38A30, 0 0 20px #F38A30, 0 0 25px #F38A30, 0 0 30px #F38A30, 0 0 35px #F38A30'
+					}
+				},
+				'.neon-button-outline': {
+					'box-shadow': '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #fff',
+					'transition': 'all 0.3s ease-in-out',
+					'&:hover': {
+						'box-shadow': '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #fff, 0 0 25px #fff, 0 0 30px #fff, 0 0 35px #fff'
+					}
+				},
+				'.neon-card': {
+					'transition': 'all 0.3s ease-in-out',
+					'&:hover': {
+						'box-shadow': '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #fff, 0 0 25px #fff, 0 0 30px #fff, 0 0 35px #fff'
+					}
+				}
 			}
 		}
 	},
