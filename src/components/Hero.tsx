@@ -23,15 +23,16 @@ export default function EnhancedHero() {
   const backgrounds = [
     {
       type: "video",
-      src: "/locato1.mp4"  // Vidéo locale depuis le dossier public
+      src: "/locato1.mp4",  // Vidéo locale depuis le dossier public
+      poster: "/locato1-poster.jpg" // Ajout d'une image de poster pour le chargement
     },
     {
       type: "image",
-      src: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070"
+      src: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070&auto=format&fit=crop&w=1920&q=75" // Optimisation de l'image
     },
     {
       type: "image",
-      src: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070"
+      src: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop&w=1920&q=75" // Optimisation de l'image
     }
   ];
 
@@ -47,19 +48,20 @@ export default function EnhancedHero() {
   
   // Animation de démarrage et intervalles
   useEffect(() => {
+    // Chargement plus rapide
     const timer = setTimeout(() => {
       setIsLoaded(true);
-    }, 100);
+    }, 50); // Réduit de 100ms à 50ms
     
-    // Changement de texte
+    // Changement de texte plus rapide
     const textInterval = setInterval(() => {
       setCurrentTextIndex((prevIndex) => (prevIndex + 1) % textOptions.length);
-    }, 3000);
+    }, 2000); // Réduit de 3000ms à 2000ms
     
-    // Changement d'arrière-plan
+    // Changement d'arrière-plan plus rapide
     const bgInterval = setInterval(() => {
       setCurrentBgIndex((prevIndex) => (prevIndex + 1) % backgrounds.length);
-    }, 8000);
+    }, 6000); // Réduit de 8000ms à 6000ms
     
     return () => {
       clearTimeout(timer);
@@ -68,13 +70,20 @@ export default function EnhancedHero() {
     };
   }, []);
   
-  // Gestion de la lecture vidéo
+  // Gestion de la lecture vidéo optimisée
   useEffect(() => {
     if (backgrounds[currentBgIndex].type === "video" && videoRef.current) {
+      // Préchargement de la vidéo
+      videoRef.current.preload = "auto";
       videoRef.current.currentTime = 0;
-      videoRef.current.play().catch(error => {
-        console.log("Lecture vidéo automatique bloquée:", error);
-      });
+      
+      // Lecture optimisée
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.log("Lecture vidéo optimisée:", error);
+        });
+      }
     }
   }, [currentBgIndex]);
 
@@ -257,7 +266,7 @@ export default function EnhancedHero() {
       {backgrounds.map((bg, index) => (
         <div
           key={index}
-          className={`absolute inset-0 z-0 transition-opacity duration-1000 ${
+          className={`absolute inset-0 z-0 transition-opacity duration-700 ${
             currentBgIndex === index ? "opacity-100" : "opacity-0"
           }`}
         >
@@ -266,25 +275,33 @@ export default function EnhancedHero() {
               className="absolute inset-0 bg-center bg-cover"
               style={{
                 backgroundImage: `url('${bg.src}')`,
-                filter: "brightness(0.3) contrast(1.1)"
+                filter: "brightness(0.3) contrast(1.1)",
+                transform: "scale(1.1)", // Légèrement plus grand pour éviter les bords blancs
+                transition: "transform 0.3s ease-out"
               }}
             />
           ) : (
             <video
               ref={videoRef}
               src={bg.src}
+              poster={bg.poster}
               className="absolute inset-0 w-full h-full object-cover"
               muted
               playsInline
               loop
-              style={{ filter: "brightness(0.3) contrast(1.1)" }}
+              style={{ 
+                filter: "brightness(0.3) contrast(1.1)",
+                transform: "scale(1.1)",
+                transition: "transform 0.3s ease-out"
+              }}
             />
           )}
           <div 
             className="absolute inset-0" 
             style={{ 
-              background: `linear-gradient(135deg, ${primaryColor}30 0%, ${secondaryColor}30 100%)`,
-              mixBlendMode: 'soft-light'
+              background: `linear-gradient(135deg, ${primaryColor}20 0%, ${secondaryColor}20 100%)`,
+              mixBlendMode: 'soft-light',
+              transition: "opacity 0.3s ease-out"
             }}
           />
         </div>
@@ -372,26 +389,31 @@ export default function EnhancedHero() {
             </p>
           </div>
           
-          {/* Zone de recherche */}
+          {/* Zone de recherche optimisée */}
           <div
             className={`relative max-w-2xl mx-auto mb-8 md:mb-10 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
-            style={{ transition: 'all 0.6s cubic-bezier(0.22, 1, 0.36, 1)', transitionDelay: '0.6s' }}
+            style={{ 
+              transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)', 
+              transitionDelay: '0.3s',
+              willChange: 'transform, opacity' // Optimisation des performances
+            }}
           >
-            <div className="relative flex rounded-xl overflow-hidden bg-white/10 backdrop-blur-md p-1 border border-white/10">
+            <div className="relative flex rounded-xl overflow-hidden bg-white/10 backdrop-blur-md p-1 border border-white/10 hover:border-white/20 transition-all duration-300">
               <div className="flex-1 flex items-center px-4 py-3">
-                <Search className="w-5 h-5 text-white/60 mr-3" />
+                <Search className="w-5 h-5 text-white/60 mr-3 transition-colors duration-300" />
                 <input 
                   type="text" 
                   placeholder="Où souhaitez-vous habiter ?" 
-                  className="bg-transparent text-white w-full outline-none placeholder:text-white/60"
+                  className="bg-transparent text-white w-full outline-none placeholder:text-white/60 focus:placeholder:text-white/40 transition-colors duration-300"
                 />
               </div>
               <Button 
                 size="lg" 
-                className="px-6 py-3 m-0 rounded-lg"
+                className="px-6 py-3 m-0 rounded-lg transition-all duration-300 hover:scale-105"
                 style={{ 
                   background: `linear-gradient(to right, ${primaryColor}, ${secondaryColor})`,
-                  boxShadow: `0 8px 20px -6px ${primaryColor}50`
+                  boxShadow: `0 8px 20px -6px ${primaryColor}50`,
+                  willChange: 'transform' // Optimisation des performances
                 }}
               >
                 Rechercher
@@ -501,17 +523,24 @@ export default function EnhancedHero() {
         </button>
       </div>
       
-      {/* Style global pour les animations */}
+      {/* Style global pour les animations optimisées */}
       <style jsx global>{`
         @keyframes float {
           0% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-10px) rotate(3deg); }
+          50% { transform: translateY(-8px) rotate(2deg); }
           100% { transform: translateY(0px) rotate(0deg); }
         }
         
         @keyframes bounce-slow {
           0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(4px); }
+          50% { transform: translateY(3px); }
+        }
+
+        /* Optimisation des performances */
+        .optimize-gpu {
+          transform: translateZ(0);
+          backface-visibility: hidden;
+          perspective: 1000px;
         }
       `}</style>
     </section>
